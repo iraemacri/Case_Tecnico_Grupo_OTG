@@ -1,0 +1,81 @@
+# ============================================================
+# DBT PROJECT CONFIGURATION
+# Projeto: igaming-pipeline
+# Descricao: Pipeline Medallion para analise de fraude iGaming
+# ============================================================
+
+name: "igaming_pipeline"
+version: "1.0.0"
+config-version: 2
+
+# ============================================================
+# PROFILE DE CONEXAO COM BIGQUERY
+# ============================================================
+profile: "igaming_pipeline"
+
+# ============================================================
+# CONFIGURACOES GLOBAIS
+# ============================================================
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# ============================================================
+# CONFIGURACOES POR CAMADA
+# ============================================================
+models:
+  igaming_pipeline:
+    # --------------------------------------------------------
+    # STAGING (Bronze) - Dados brutos do BigQuery
+    # --------------------------------------------------------
+    staging:
+      +materialized: view
+      +schema: igaming_bronze
+      +tags: ["bronze", "staging"]
+
+    # --------------------------------------------------------
+    # SILVER - Limpeza e conformacao
+    # --------------------------------------------------------
+    silver:
+      +materialized: incremental
+      +schema: igaming_silver
+      +tags: ["silver", "clean"]
+      +unique_key: player_id
+      +incremental_strategy: merge
+      +on_schema_change: sync_all_columns
+
+    # --------------------------------------------------------
+    # GOLD - Metricas analiticas
+    # --------------------------------------------------------
+    gold:
+      +materialized: table
+      +schema: igaming_gold
+      +tags: ["gold", "analytics"]
+
+# ============================================================
+# SEEDS (dados de teste locais)
+# ============================================================
+seeds:
+  igaming_pipeline:
+    +schema: igaming_seeds
+
+# ============================================================
+# TESTES
+# ============================================================
+tests:
+  igaming_pipeline:
+    +severity: warn
+    +store_failures: true
+
+# ============================================================
+# MACROS
+# ============================================================
+macro-paths: ["macros"]

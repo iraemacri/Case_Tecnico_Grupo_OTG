@@ -1,0 +1,94 @@
+-- ============================================================
+-- SOURCES - Definicao das fontes de dados no BigQuery
+-- Arquivo: sources.yml
+-- Descricao: Define as tabelas fonte na camada Bronze
+-- ============================================================
+
+version: 2
+
+sources:
+  - name: bronze
+    description: "Camada Bronze - Dados brutos ingeridos do BigQuery"
+    database: igaming-project
+    schema: igaming_bronze
+    tables:
+      - name: raw_players
+        description: "Tabela bruta de cadastro de jogadores"
+        columns:
+          - name: player_id
+            description: "ID unico do jogador"
+            tests:
+              - unique
+              - not_null
+          - name: email
+            description: "Email do jogador"
+            tests:
+              - not_null
+          - name: city
+            description: "Cidade do jogador"
+          - name: created_at
+            description: "Data de criacao da conta"
+          - name: _ingested_at
+            description: "Timestamp da ingestao"
+
+      - name: raw_sessions
+        description: "Tabela bruta de sessoes de acesso"
+        columns:
+          - name: session_id
+            description: "ID unico da sessao"
+            tests:
+              - unique
+              - not_null
+          - name: player_id
+            description: "ID do jogador"
+            tests:
+              - not_null
+          - name: ip
+            description: "Endereco IP da sessao"
+          - name: device
+            description: "Dispositivo utilizado"
+          - name: timestamp
+            description: "Timestamp da sessao"
+          - name: _ingested_at
+            description: "Timestamp da ingestao"
+
+      - name: raw_transactions
+        description: "Tabela bruta de transacoes financeiras"
+        columns:
+          - name: transaction_id
+            description: "ID unico da transacao"
+            tests:
+              - unique
+              - not_null
+          - name: player_id
+            description: "ID do jogador"
+            tests:
+              - not_null
+          - name: type
+            description: "Tipo da transacao (deposit/withdraw/bet)"
+          - name: amount
+            description: "Valor da transacao"
+          - name: timestamp
+            description: "Timestamp da transacao"
+          - name: _ingested_at
+            description: "Timestamp da ingestao"
+
+      - name: raw_affiliates
+        description: "Tabela bruta de performance de afiliados"
+        columns:
+          - name: affiliate_id
+            description: "ID do afiliado"
+          - name: player_id
+            description: "ID do jogador"
+          - name: country
+            description: "Pais do jogador"
+          - name: clicks
+            description: "Numero de cliques"
+          - name: registrations
+            description: "Numero de registros"
+          - name: ftd
+            description: "First Time Deposit"
+          - name: cpa_value
+            description: "Valor do CPA"
+          - name: _ingested_at
+            description: "Timestamp da ingestao"

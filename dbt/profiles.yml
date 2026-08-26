@@ -1,0 +1,39 @@
+# ============================================================
+# DBT PROFILE - BigQuery Connection
+# ============================================================
+
+igaming_pipeline:
+  target: dev
+
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: igaming-project
+      dataset: igaming_bronze
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1
+
+      # Credenciais (usar variavel de ambiente ou arquivo)
+      # keyfile: /path/to/service-account.json
+      # OU
+      # keyfile_json: |
+      #   {
+      #     "type": "service_account",
+      #     "project_id": "igaming-project",
+      #     ...
+      #   }
+
+    prod:
+      type: bigquery
+      method: service-account
+      project: igaming-project
+      dataset: igaming_bronze
+      threads: 8
+      timeout_seconds: 600
+      location: US
+      priority: batch
+      retries: 3

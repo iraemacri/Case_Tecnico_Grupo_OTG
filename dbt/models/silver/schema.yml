@@ -1,0 +1,112 @@
+-- ============================================================
+-- SCHEMA - Definicao dos modelos Silver
+-- Arquivo: schema.yml
+-- Descricao: Testes e documentacao dos modelos Silver
+-- ============================================================
+
+version: 2
+
+models:
+  - name: dim_players
+    description: "Dimensao de jogadores - dados limpos e deduplicados"
+    columns:
+      - name: player_id
+        description: "ID unico do jogador"
+        tests:
+          - unique
+          - not_null
+      - name: email
+        description: "Email normalizado"
+        tests:
+          - not_null
+      - name: city
+        description: "Cidade do jogador"
+      - name: created_at
+        description: "Data de criacao da conta"
+        tests:
+          - not_null
+
+  - name: dim_sessions
+    description: "Dimensao de sessoes - dados limpos e deduplicados"
+    columns:
+      - name: session_id
+        description: "ID unico da sessao"
+        tests:
+          - unique
+          - not_null
+      - name: player_id
+        description: "ID do jogador"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_players')
+              field: player_id
+      - name: ip
+        description: "Endereco IP"
+      - name: device
+        description: "Dispositivo utilizado"
+        tests:
+          - accepted_values:
+              values: ['android', 'ios', 'desktop']
+      - name: session_timestamp
+        description: "Timestamp da sessao"
+        tests:
+          - not_null
+
+  - name: fct_transactions
+    description: "Fato de transacoes financeiras - dados limpos"
+    columns:
+      - name: transaction_id
+        description: "ID unico da transacao"
+        tests:
+          - unique
+          - not_null
+      - name: player_id
+        description: "ID do jogador"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_players')
+              field: player_id
+      - name: transaction_type
+        description: "Tipo da transacao"
+        tests:
+          - accepted_values:
+              values: ['deposit', 'withdraw', 'bet']
+      - name: amount
+        description: "Valor da transacao"
+        tests:
+          - not_null
+
+  - name: dim_affiliates
+    description: "Dimensao de afiliados - dados limpos e com metricas"
+    columns:
+      - name: affiliate_id
+        description: "ID do afiliado"
+        tests:
+          - not_null
+      - name: player_id
+        description: "ID do jogador"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_players')
+              field: player_id
+      - name: country
+        description: "Pais do jogador"
+      - name: clicks
+        description: "Numero de cliques"
+        tests:
+          - not_null
+      - name: registrations
+        description: "Numero de registros"
+        tests:
+          - not_null
+      - name: ftd_count
+        description: "First Time Deposit"
+        tests:
+          - not_null
+      - name: cpa_value
+        description: "Valor do CPA"
+        tests:
+          - not_null

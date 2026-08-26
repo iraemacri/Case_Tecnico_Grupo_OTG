@@ -1,0 +1,95 @@
+-- ============================================================
+-- SCHEMA - Definicao dos modelos Gold
+-- Arquivo: schema.yml
+-- Descricao: Testes e documentacao dos modelos Gold
+-- ============================================================
+
+version: 2
+
+models:
+  - name: fct_fraud_signals
+    description: "Sinais de fraude detectados nos dados de iGaming"
+    columns:
+      - name: fraud_signal_id
+        description: "ID unico do sinal de fraude"
+        tests:
+          - unique
+          - not_null
+      - name: player_id
+        description: "ID do jogador afetado"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_players')
+              field: player_id
+      - name: signal_type
+        description: "Tipo do sinal de fraude"
+        tests:
+          - accepted_values:
+              values: ['MULTI_ACCOUNTING', 'DEPOSIT_WITHOUT_BET', 'DEVICE_SHARING', 'RAPID_DEPOSIT_WITHDRAW']
+      - name: risk_level
+        description: "Nivel de risco"
+        tests:
+          - accepted_values:
+              values: ['HIGH', 'MEDIUM', 'LOW']
+      - name: detected_at
+        description: "Timestamp da deteccao"
+        tests:
+          - not_null
+
+  - name: fct_affiliate_performance
+    description: "Metricas de performance de afiliados"
+    columns:
+      - name: affiliate_performance_id
+        description: "ID unico da metrica"
+        tests:
+          - unique
+          - not_null
+      - name: affiliate_id
+        description: "ID do afiliado"
+        tests:
+          - not_null
+      - name: country
+        description: "Pais do jogador"
+      - name: total_players
+        description: "Total de jogadores referenciados"
+        tests:
+          - not_null
+      - name: total_ftd
+        description: "Total de First Time Deposits"
+        tests:
+          - not_null
+      - name: total_cpa_revenue
+        description: "Receita total de CPA"
+        tests:
+          - not_null
+      - name: overall_conversion_rate
+        description: "Taxa de conversao geral"
+      - name: affiliate_roi
+        description: "ROI do afiliado"
+
+  - name: fct_financial_summary
+    description: "Resumo financeiro para dashboards"
+    columns:
+      - name: player_id
+        description: "ID do jogador"
+        tests:
+          - unique
+          - not_null
+      - name: total_deposits
+        description: "Total de depositos"
+        tests:
+          - not_null
+      - name: total_bets
+        description: "Total de apostas"
+        tests:
+          - not_null
+      - name: ggr
+        description: "Gross Gaming Revenue"
+      - name: estimated_ltv
+        description: "LTV estimado"
+      - name: risk_classification
+        description: "Classificacao de risco do jogador"
+        tests:
+          - accepted_values:
+              values: ['HIGH_RISK_NO_BETS', 'HIGH_RISK_OVER_WITHDRAWAL', 'MEDIUM_RISK_NEW_HIGH_VALUE', 'NORMAL']
