@@ -1,6 +1,6 @@
-# Case Técnico — Especialista de Dados | Grupo OTG
+# Case Tecnico - Especialista de Dados | Grupo OTG
 
-**Autor:** Iraê Szabo Macri
+**Autor:** Irae Szabo Macri
 **Email:** irae.macri@gmail.com
 **Data:** Agosto 2026
 
@@ -8,19 +8,19 @@
 
 ## Contexto
 
-Pipeline completa de dados para plataforma de iGaming, construída com **Medallion Architecture** (Bronze → Silver → Gold). O projeto resolve ingestion, tratamento e análise de dados de múltiplas fontes (jogadores, sessões, transações financeiras e afiliados) com foco em **detecção de fraude** e **performance de afiliados**.
+Pipeline completa de dados para plataforma de iGaming, construida com **Medallion Architecture** (Bronze, Silver, Gold). O projeto resolve ingestion, tratamento e analise de dados de multiplas fontes (jogadores, sessoes, transacoes financeiras e afiliados) com foco em **deteccao de fraude** e **performance de afiliados**.
 
 ---
 
-## Stack Tecnológica
+## Stack Tecnologica
 
-| Camada | Ferramenta | Função |
+| Camada | Ferramenta | Funcao |
 |--------|-----------|--------|
-| Orquestração | Apache Airflow | DAGs, agendamento, retry, logging |
-| Transformação | dbt | Modelos SQL versionados, testes, documentação |
-| Data Warehouse | Google BigQuery | Armazenamento e processamento analítico |
-| Dashboard | Power BI | Visualização interativa |
-| Linguagem | SQL + Python | Transformações e orquestração |
+| Orquestracao | Apache Airflow | DAGs, agendamento, retry, logging |
+| Transformacao | dbt | Modelos SQL versionados, testes, documentacao |
+| Data Warehouse | Google BigQuery | Armazenamento e processamento analitico |
+| Dashboard | Power BI | Visualizacao interativa |
+| Linguagem | SQL + Python | Transformacoes e orquestracao |
 
 ---
 
@@ -28,46 +28,46 @@ Pipeline completa de dados para plataforma de iGaming, construída com **Medalli
 
 ```
 Fontes (JSON/CSV)
-       │
-       ▼
-┌──────────────┐
-│   BRONZE     │  Dados crus, sem transformação
-│  (Raw)       │  Schema idêntico à fonte
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│   SILVER     │  Limpeza, deduplicação, validação
-│  (Clean)     │  Joins entre tabelas, padronização
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│    GOLD      │  Métricas analíticas prontas
-│ (Analytics)  │  KPIs, sinais de fraude, afiliados
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│  POWER BI    │  Dashboards interativos
-│ (Dashboard)  │  Fraud / Affiliates / Financial
-└──────────────┘
+       |
+       v
++--------------+
+|   BRONZE     |  Dados crus, sem transformacao
+|  (Raw)       |  Schema identico a fonte
++------+-------+
+       |
+       v
++--------------+
+|   SILVER     |  Limpeza, deduplicacao, validacao
+|  (Clean)     |  Joins entre tabelas, padronizacao
++------+-------+
+       |
+       v
++--------------+
+|    GOLD      |  Metricas analiticas prontas
+| (Analytics)  |  KPIs, sinais de fraude, afiliados
++------+-------+
+       |
+       v
++--------------+
+|  POWER BI    |  Dashboards interativos
+| (Dashboard)  |  Fraud / Affiliates / Financial
++--------------+
 ```
 
-Documentação completa: [`arquitetura/01_arquitetura_medallion.md`](arquitetura/01_arquitetura_medallion.md)
+Documentacao completa: `arquitetura/01_arquitetura_medallion.md`
 
 ---
 
-## Definição de Cargas
+## Definicao de Cargas
 
-| Dataset | Frequência | Tipo | Justificativa |
+| Dataset | Frequencia | Tipo | Justificativa |
 |---------|-----------|------|---------------|
-| players.json | Diária | Full | Volume pequeno, atualizações raras |
-| sessions.json | Horária | Incremental | Detecção de fraude exige dados recentes |
-| transactions.csv | Horária | Incremental | Transações financeiras são críticas em tempo real |
-| affiliate_cpa_ftd.csv | Diária | Incremental | Performance de afiliados avaliada diariamente |
+| players.json | Diaria | Full | Volume pequeno, atualizacoes raras |
+| sessions.json | Horaria | Incremental | Deteccao de fraude exige dados recentes |
+| transactions.csv | Horaria | Incremental | Transacoes financeiras sao criticas em tempo real |
+| affiliate_cpa_ftd.csv | Diaria | Incremental | Performance de afiliados avaliada diariamente |
 
-Documentação completa: [`arquitetura/02_definicao_cargas.md`](arquitetura/02_definicao_cargas.md)
+Documentacao completa: `arquitetura/02_definicao_cargas.md`
 
 ---
 
@@ -75,88 +75,54 @@ Documentação completa: [`arquitetura/02_definicao_cargas.md`](arquitetura/02_d
 
 ```
 .
-├── arquitetura/              # Documentação da arquitetura e cargas
-│   ├── 01_arquitetura_medallion.md
-│   └── 02_definicao_cargas.md
-├── airflow/
-│   └── dags/                 # DAGs de orquestração
-├── dbt/
-│   ├── dbt_project.yml       # Configuração do projeto dbt
-│   └── models/
-│       ├── bronze/           # Raw ingestion (staging)
-│       ├── silver/           # Limpeza e conformação
-│       └── gold/             # Métricas analíticas
-├── dashboard/                # Prints e documentação do dashboard
-├── BASES_CASE/               # Dados brutos fornecidos
-│   ├── players.json
-│   ├── sessions.json
-│   ├── transactions.csv
-│   └── affiliate_cpa_ftd.csv
-└── README.md
++-- arquitetura/              # Documentacao da arquitetura e cargas
+|   +-- 01_arquitetura_medallion.md
+|   +-- 02_definicao_cargas.md
++-- airflow/
+|   +-- dags/                 # DAGs de orquestracao
++-- dbt/
+|   +-- dbt_project.yml       # Configuracao do projeto dbt
+|   +-- models/
+|       +-- staging/          # Raw ingestion (Bronze)
+|       +-- silver/           # Limpeza e conformacao
+|       +-- gold/             # Metricas analiticas
++-- dashboard/                # Prints e documentacao do dashboard
++-- BASES_CASE/               # Dados brutos fornecidos
+|   +-- players.json
+|   +-- sessions.json
+|   +-- transactions.csv
+|   +-- affiliate_cpa_ftd.csv
++-- README.md
 ```
-
----
-
-## Como Rodar
-
-### Pré-requisitos
-- Python 3.9+
-- Google Cloud Platform (BigQuery)
-- Airflow (local ou managed)
-- dbt Core
-- Power BI Desktop
-
-### 1. Configuração do dbt
-```bash
-cd dbt
-pip install dbt-bigquery
-dbt deps
-dbt seed --profiles-dir ~/.dbt
-dbt run --profiles-dir ~/.dbt
-dbt test --profiles-dir ~/.dbt
-```
-
-### 2. Configuração do Airflow
-```bash
-cd airflow
-pip install apache-airflow-providers-google
-# Copiar dags/ para o DAG_FOLDER do Airflow
-# Configurar conexão com BigQuery no Airflow UI
-```
-
-### 3. Dashboard
-Abrir o arquivo `.pbix` no Power BI Desktop ou acessar os prints na pasta `dashboard/`.
 
 ---
 
 ## Sinais de Fraude Implementados
 
-A camada **Gold** implementa detecção de fraude com base em:
+A camada **Gold** implementa deteccao de fraude com base em:
 
-1. **Multi-accounting** — Mesmo IP ou device utilizado em múltiplas contas de jogadores
-2. **Depósito sem aposta (Deposit without Bet)** — Jogadores que depositam mas não realizam apostas
-3. **Padrão anômalo de afiliado** — Afiliados com alta taxa de FTD mas baixo volume de clicks
-
-Detalhes em: [`dbt/models/gold/`](dbt/models/gold/)
+1. **Multi-accounting** - Mesmo IP ou device utilizado em multiplas contas
+2. **Deposit without Bet** - Jogadores que depositam mas nao realizam apostas
+3. **Device Sharing** - Mesmo dispositivo usado por muitos jogadores
+4. **Rapid Deposit-Withdraw** - Deposito e saque em menos de 1 hora
 
 ---
 
-## Entregáveis do Case
+## Entregaves do Case
 
-| # | Entregável | Status | Localização |
+| # | Entregavel | Status | Localizacao |
 |---|-----------|--------|-------------|
-| 1 | Arquitetura (diagrama) | Concluído | [`arquitetura/01_arquitetura_medallion.md`](arquitetura/01_arquitetura_medallion.md) |
-| 2 | Definição de cargas | Concluído | [`arquitetura/02_definicao_cargas.md`](arquitetura/02_definicao_cargas.md) |
-| 3 | Airflow DAG | Concluído | [`airflow/dags/`](airflow/dags/) |
-| 4 | Modelos dbt | Concluído | [`dbt/models/`](dbt/models/) |
-| 5 | Observabilidade | Concluído | [`arquitetura/01_arquitetura_medallion.md`](arquitetura/01_arquitetura_medallion.md#observabilidade) |
-| 6 | Análise de fraude | Concluído | [`dbt/models/gold/`](dbt/models/gold/) |
-| 7 | Dashboard Power BI | Concluído | [`dashboard/`](dashboard/) |
+| 1 | Arquitetura (diagrama) | Concluido | `arquitetura/01_arquitetura_medallion.md` |
+| 2 | Definicao de cargas | Concluido | `arquitetura/02_definicao_cargas.md` |
+| 3 | Airflow DAG | Concluido | `airflow/dags/` |
+| 4 | Modelos dbt | Concluido | `dbt/models/` |
+| 5 | Observabilidade | Concluido | `arquitetura/01_arquitetura_medallion.md` |
+| 6 | Analise de fraude | Concluido | `dbt/models/gold/` |
+| 7 | Dashboard Power BI | Concluido | `dashboard/` |
 
 ---
 
 ## Contato
 
-**[Seu Nome]**
-- LinkedIn: [seu-linkedin]
-- Email: [seu-email]
+**Irae Szabo Macri**
+- Email: irae.macri@gmail.com
